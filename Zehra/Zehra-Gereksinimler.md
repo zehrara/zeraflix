@@ -1,4 +1,4 @@
-# zera'nın Gereksinimleri
+# Zehra Dilşen'in Gereksinimleri
 
 Zeraflix projesinin tüm geliştirme süreçleri tek kişi tarafından yürütüldüğü için, projeye ait 11 adet (10 temel, 1 ekstra) gereksinimin tamamı aşağıda listelenmiş ve detaylandırılmıştır.
 
