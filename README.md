@@ -25,7 +25,7 @@
 
 **Grup Adı:** Polaris
 
-**Ekip Üyeleri:** - Zehra Dilşen*
+**Ekip Üyeleri:** - Zehra Dilşen
 ---
 
 ## Gereksinim Analizi
