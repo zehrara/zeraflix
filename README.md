@@ -28,26 +28,6 @@
 **Ekip Üyeleri:** - Zehra Dilşen
 ---
 
-## Gereksinim Analizi
-
-
-**Temel Gereksinimler:**
-1. **Kullanıcı Kaydı Olma (POST):** Yeni kullanıcıların e-posta ve şifre bilgilerini girerek sisteme üye olmasını sağlar.
-2. **Giriş Yapma (POST):** Mevcut kullanıcıların kayıtlı bilgileri ile sisteme erişim sağlamasına olanak tanır.
-3. **Profil Bilgilerini Güncelleme (PUT):** Kullanıcının profil adını, dil tercihini veya profil fotoğrafını değiştirmesine olanak tanır.
-4. **Profil Silme (DELETE):** Kullanıcının artık kullanmak istemediği profilleri sistemden kaldırmasını sağlar.
-5. **Film ve Dizi Listeleme (GET):** Ana sayfada kategorilere ayrılmış film veya dizi içeriklerinin kullanıcıya gösterilmesi.
-6. **İçerik Arama (GET):** Kullanıcının arama çubuğuna yazdığı kelimeye uygun film veya dizileri bulup listeler.
-7. **Listeme Ekleme (POST):** Kullanıcının daha sonra izlemek istediği bir içeriği "Listem" bölümüne kaydetmesini sağlar.
-8. **Listeden Çıkarma (DELETE):** "Listem" bölümündeki bir içeriği listeden temizlemesini sağlar.
-9. **İçeriğe Puan Verme (PUT):** Kullanıcının izlediği bir içeriği beğenip beğenmediğini güncellemesini sağlar.
-10. **İzleme Geçmişi Görüntüleme (GET):** Kullanıcının daha önce izlemeye başladığı veya bitirdiği içerikleri listeler.
-
-**Ekstra Özellik:**
-11. **Kişiselleştirilmiş Öneri Sunma (GET):** Kullanıcının izleme geçmişine dayalı olarak, yapay zeka destekli algoritmalarla kişiye özel içerik önerileri sunulması.
-
----
-
 ## Dokümantasyon
 
 
