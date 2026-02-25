@@ -25,12 +25,11 @@
 
 **Grup Adı:** Polaris
 
-**Ekip Üyeleri:** - Zehra *(Not: Proje tek kişi tarafından yürütülmektedir)*
-
+**Ekip Üyeleri:** - Zehra Dilşen*
 ---
 
 ## Gereksinim Analizi
-*(Not: Polaris takımı tek kişiden oluştuğu için tüm gereksinimlerin geliştirme sorumluluğu Zehra'ya aittir.)*
+
 
 **Temel Gereksinimler:**
 1. **Kullanıcı Kaydı Olma (POST):** Yeni kullanıcıların e-posta ve şifre bilgilerini girerek sisteme üye olmasını sağlar.
@@ -44,14 +43,14 @@
 9. **İçeriğe Puan Verme (PUT):** Kullanıcının izlediği bir içeriği beğenip beğenmediğini güncellemesini sağlar.
 10. **İzleme Geçmişi Görüntüleme (GET):** Kullanıcının daha önce izlemeye başladığı veya bitirdiği içerikleri listeler.
 
-**Ekstra Özellik (Bonus):**
+**Ekstra Özellik:**
 11. **Kişiselleştirilmiş Öneri Sunma (GET):** Kullanıcının izleme geçmişine dayalı olarak, yapay zeka destekli algoritmalarla kişiye özel içerik önerileri sunulması.
 
 ---
 
 ## Dokümantasyon
 
-Proje tek kişi tarafından yürütüldüğü için geliştirme dokümanları aşağıdaki dosyalarda takip edilecektir:
+
 
 1. [Gereksinim Analizi Detayları](Gereksinim-Analizi.md)
 2. [REST API Tasarımı](API-Tasarimi.md)
