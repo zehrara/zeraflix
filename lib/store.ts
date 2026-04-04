@@ -43,7 +43,15 @@ const store: {
   ratings: RatingEntry[]
   history: HistoryEntry[]
 } = {
-  users: [],
+  users: [
+    {
+      id: 'u0',
+      email: 'zehra@test.com',
+      password: '123456',
+      name: 'Zehra Dilşen',
+      createdAt: '2026-01-01T00:00:00.000Z',
+    },
+  ],
   content: [
     {
       id: 'c1',
