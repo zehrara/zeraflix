@@ -2,6 +2,23 @@ import type { NextRequest } from 'next/server'
 import store from '@/lib/store'
 import { getAuthUser } from '@/lib/auth'
 
+export async function GET(request: NextRequest) {
+  const user = getAuthUser(request)
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const userWatchlist = store.watchlist
+    .filter((w) => w.userId === user.id)
+    .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
+    .map((w) => ({
+      ...w,
+      content: store.content.find((c) => c.id === w.contentId),
+    }))
+
+  return Response.json({ watchlist: userWatchlist, total: userWatchlist.length })
+}
+
 export async function POST(request: NextRequest) {
   const user = getAuthUser(request)
   if (!user) {
