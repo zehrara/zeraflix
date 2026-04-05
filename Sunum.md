@@ -2,9 +2,8 @@
 
 ## Sunum Videosu
 
-> **REST API Test Videosu:** *https://youtu.be/4Af_XOhFslM*
-> **Web Frontend Test Videosu:** *https://youtu.be/cRY4NHRDlBw*
-
+> **REST API Test Videosu:** https://youtu.be/4Af_XOhFslM
+> **Web Frontend Test Videosu:** https://youtu.be/cRY4NHRDlBw
 ---
 
 ## Zehra Dilşen - Sunum
