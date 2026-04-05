@@ -16,8 +16,8 @@
 
 ## Proje Linkleri
 
-- **REST API Adresi:** *(Proje ilerledikçe eklenecek)*
-- **Web Frontend Adresi:** *(Proje ilerledikçe eklenecek)*
+* **REST API Adresi:** https://zeraflix.vercel.app
+* **Web Frontend Adresi:** https://zeraflix.vercel.app
 
 ---
 
