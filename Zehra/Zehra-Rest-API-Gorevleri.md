@@ -20,7 +20,7 @@ https://zeraflix.vercel.app
 | 11 | Kişisel Öneri | GET | /api/recommendations | ✅ |
 
 ## Test Videosu
-(https://youtu.be/4Af_XOhFslM)
+https://youtu.be/4Af_XOhFslM
 
 ## POSTMAN Koleksiyonu
 Zehra-Zeraflix-API.postman_collection.json
