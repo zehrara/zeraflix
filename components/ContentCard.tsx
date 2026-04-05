@@ -8,6 +8,7 @@ interface Content {
   year: number
   description: string
   rating: number
+  videoUrl?: string
 }
 
 interface Props {
@@ -28,13 +29,27 @@ const genreColors: Record<string, string> = {
 export default function ContentCard({ content, onAddToWatchlist, onRemoveFromWatchlist, inWatchlist }: Props) {
   const gradient = genreColors[content.genre] ?? genreColors.default
 
+  function handleCardClick() {
+    if (content.videoUrl) window.open(content.videoUrl, '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div className="group relative bg-zinc-900 rounded-lg overflow-hidden hover:scale-105 hover:shadow-2xl hover:shadow-black/60 transition-all duration-300 cursor-pointer">
+    <div
+      className="group relative bg-zinc-900 rounded-lg overflow-hidden hover:scale-105 hover:shadow-2xl hover:shadow-black/60 transition-all duration-300 cursor-pointer"
+      onClick={handleCardClick}
+    >
       {/* Placeholder image area */}
-      <div className={`h-40 bg-gradient-to-br ${gradient} flex items-end p-3`}>
+      <div className={`h-40 bg-gradient-to-br ${gradient} flex items-end justify-between p-3`}>
         <span className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
           {content.genre}
         </span>
+        {content.videoUrl && (
+          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <svg className="w-4 h-4 text-white fill-white ml-0.5" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        )}
       </div>
 
       {/* Content info */}

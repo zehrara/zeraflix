@@ -15,6 +15,7 @@ export interface Content {
   description: string
   rating: number
   ratingCount: number
+  videoUrl: string
 }
 
 export interface WatchlistEntry {
@@ -62,6 +63,7 @@ const store: {
       description: 'A chemistry teacher turns to cooking meth after a cancer diagnosis.',
       rating: 9.5,
       ratingCount: 1,
+      videoUrl: 'https://www.youtube.com/watch?v=FZnD85z9yig',
     },
     {
       id: 'c2',
@@ -72,6 +74,7 @@ const store: {
       description: 'A thief who steals corporate secrets through dream-sharing technology.',
       rating: 8.8,
       ratingCount: 1,
+      videoUrl: 'https://youtu.be/YuPgNaz5-3k',
     },
     {
       id: 'c3',
@@ -82,6 +85,7 @@ const store: {
       description: 'Batman faces the Joker, a criminal mastermind who plunges Gotham into anarchy.',
       rating: 9.0,
       ratingCount: 1,
+      videoUrl: 'https://youtu.be/zKNo5W00UvI',
     },
     {
       id: 'c4',
@@ -92,6 +96,7 @@ const store: {
       description: 'Kids encounter supernatural forces and a secret government experiment.',
       rating: 8.7,
       ratingCount: 1,
+      videoUrl: 'https://youtu.be/FVio-fg4g8I',
     },
     {
       id: 'c5',
@@ -102,6 +107,7 @@ const store: {
       description: 'Explorers travel through a wormhole in space to ensure humanity\'s survival.',
       rating: 8.6,
       ratingCount: 1,
+      videoUrl: 'https://youtu.be/fBm2djOTYTQ',
     },
     {
       id: 'c6',
@@ -112,6 +118,7 @@ const store: {
       description: 'The political rivalries and romance of Queen Elizabeth II\'s reign.',
       rating: 8.2,
       ratingCount: 1,
+      videoUrl: 'https://youtu.be/rW_neOTS_98',
     },
   ],
   watchlist: [],
