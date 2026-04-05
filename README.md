@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ZERAFLIX
 
-## Getting Started
+![Zeraflix Logo](zeraflix-logo.jpeg)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Proje Hakkında
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Proje Tanımı:** Zeraflix, kullanıcıların çeşitli kategorilerde film ve dizi içeriklerini keşfedebileceği, kendi izleme listelerini oluşturabileceği ve içerikleri izleyebileceği kullanıcı dostu bir Netflix klonu projesidir. Modern web ve mobil teknolojileri kullanılarak geliştirilmektedir.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Proje Kategorisi:** Video Akış Platformu (Streaming) / Eğlence
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Referans Uygulama:** [Netflix](https://www.netflix.com)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Proje Linkleri
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **REST API Adresi:** https://zeraflix.vercel.app
+* **Web Frontend Adresi:** https://zeraflix.vercel.app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Proje Ekibi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Grup Adı:** Polaris
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Ekip Üyeleri:** - Zehra Dilşen
+---
+
+## Dokümantasyon
+
+
+
+1. [Gereksinim Analizi Detayları](Gereksinim-Analizi.md)
+2. [REST API Tasarımı](API-Tasarimi.md)
+3. [REST API Görevleri](Rest-API.md)
+4. [Web Front-End Görevleri](WebFrontEnd.md)
+5. [Mobil Front-End Görevleri](MobilFrontEnd.md)
+6. [Mobil Backend Görevleri](MobilBackEnd.md)
+
+---
