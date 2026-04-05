@@ -2,8 +2,8 @@
 
 ## Sunum Videosu
 
-> **REST API Test Videosu:** *(YouTube linki eklenecek)*
-> **Web Frontend Test Videosu:** *(YouTube linki eklenecek)*
+> **REST API Test Videosu:** *https://youtu.be/4Af_XOhFslM*
+> **Web Frontend Test Videosu:** *https://youtu.be/cRY4NHRDlBw*
 
 ---
 
