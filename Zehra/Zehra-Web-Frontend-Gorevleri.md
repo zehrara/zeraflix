@@ -20,4 +20,4 @@ https://zeraflix.vercel.app
 | 11 | Kişisel Öneri | Öneri Sayfası | /recommendations | ✅ |
 
 ## Test Videosu
-*(YouTube linki video çekildikten sonra eklenecek)*
+https://youtu.be/cRY4NHRDlBw
