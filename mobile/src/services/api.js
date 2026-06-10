@@ -28,6 +28,8 @@ export const userService = {
   addToWatchlist: (contentId) => api.post('/api/watchlist', { contentId }),
   removeFromWatchlist: (contentId) => api.delete('/api/watchlist', { data: { contentId } }),
   updateProfile: (data) => api.put('/api/profile', data),
+  deleteProfile: () => api.delete('/api/profile'),
+  rateContent: (contentId, rating) => api.put('/api/rate', { contentId, rating }),
 };
 
 export default api;

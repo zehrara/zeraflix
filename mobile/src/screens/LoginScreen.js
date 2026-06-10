@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { authService } from '../services/api';
 
 export default function LoginScreen({ navigation }) {
@@ -23,23 +23,25 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={s.container}>
-      <Text style={s.logo}>🎬 Zeraflix</Text>
-      <Text style={s.title}>Giriş Yap</Text>
-      <TextInput style={s.input} placeholder="E-posta" placeholderTextColor="#888" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-      <TextInput style={s.input} placeholder="Şifre" placeholderTextColor="#888" value={password} onChangeText={setPassword} secureTextEntry />
-      <TouchableOpacity style={s.btn} onPress={handleLogin} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>Giriş Yap</Text>}
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={s.link}>Hesabın yok mu? <Text style={s.linkBold}>Kayıt Ol</Text></Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={s.container} keyboardShouldPersistTaps="handled">
+        <Text style={s.logo}>🎬 Zeraflix</Text>
+        <Text style={s.title}>Giriş Yap</Text>
+        <TextInput style={s.input} placeholder="E-posta" placeholderTextColor="#888" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput style={s.input} placeholder="Şifre" placeholderTextColor="#888" value={password} onChangeText={setPassword} secureTextEntry />
+        <TouchableOpacity style={s.btn} onPress={handleLogin} disabled={loading}>
+          {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>Giriş Yap</Text>}
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={s.link}>Hesabın yok mu? <Text style={s.linkBold}>Kayıt Ol</Text></Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414', justifyContent: 'center', padding: 24 },
+  container: { flexGrow: 1, backgroundColor: '#141414', paddingVertical: 60, padding: 24 },
   logo: { fontSize: 36, textAlign: 'center', marginBottom: 8 },
   title: { fontSize: 28, color: '#fff', fontWeight: 'bold', textAlign: 'center', marginBottom: 32 },
   input: { backgroundColor: '#333', color: '#fff', borderRadius: 8, padding: 14, marginBottom: 14, fontSize: 16 },
