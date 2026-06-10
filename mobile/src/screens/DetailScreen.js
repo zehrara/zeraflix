@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { userService } from '../services/api';
@@ -44,6 +45,14 @@ export default function DetailScreen({ route, navigation }) {
     } catch {
       // geçmişe eklenemese de izlemeye devam et
     }
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      await fetch('http://localhost:3001/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, contentId: item.id, action: 'watch' })
+      });
+    } catch {}
     try {
       await Linking.openURL(item.videoUrl);
     } catch {
