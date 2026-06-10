@@ -47,7 +47,7 @@ export default function DetailScreen({ route, navigation }) {
     }
     try {
       const userId = await AsyncStorage.getItem('userId');
-      await fetch('http://localhost:3001/notify', {
+      await fetch('http://192.168.56.1:3001/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, contentId: item.id, action: 'watch' })
