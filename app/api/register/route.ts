@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import store, { generateUserId } from '@/lib/store'
+import { getUsers, setCollection } from '@/lib/redis'
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
@@ -9,18 +9,19 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'email, password and name are required' }, { status: 400 })
   }
 
-  if (store.users.find((u) => u.email === email)) {
+  const users = await getUsers()
+  if (users.find((u) => u.email === email)) {
     return Response.json({ error: 'Email already registered' }, { status: 409 })
   }
 
   const user = {
-    id: generateUserId(),
+    id: crypto.randomUUID(),
     email,
     password,
     name,
     createdAt: new Date().toISOString(),
   }
-  store.users.push(user)
+  await setCollection('users', [...users, user])
 
   const { password: _, ...safeUser } = user
   return Response.json({ user: safeUser }, { status: 201 })

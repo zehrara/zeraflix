@@ -4,21 +4,17 @@ import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity
 import { authService } from '../services/api';
 
 export default function RegisterScreen({ navigation }) {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!firstName || !lastName || !email || !password) return Alert.alert('Hata', 'Tüm alanları doldurun.');
+    if (!name || !email || !password) return Alert.alert('Hata', 'Tüm alanları doldurun.');
     setLoading(true);
     try {
-      const res = await authService.register(email, password, firstName, lastName);
-      const { token, userId } = res.data;
-      await AsyncStorage.setItem('token', token);
-      await AsyncStorage.setItem('userId', String(userId));
-      navigation.replace('Main');
+      await authService.register(email, password, name);
+      navigation.replace('Login');
     } catch (e) {
       Alert.alert('Kayıt Başarısız', e.response?.data?.message || 'Bir hata oluştu.');
     } finally { setLoading(false); }
@@ -28,8 +24,7 @@ export default function RegisterScreen({ navigation }) {
     <View style={s.container}>
       <Text style={s.logo}>🎬 Zeraflix</Text>
       <Text style={s.title}>Kayıt Ol</Text>
-      <TextInput style={s.input} placeholder="Ad" placeholderTextColor="#888" value={firstName} onChangeText={setFirstName} />
-      <TextInput style={s.input} placeholder="Soyad" placeholderTextColor="#888" value={lastName} onChangeText={setLastName} />
+      <TextInput style={s.input} placeholder="Ad Soyad" placeholderTextColor="#888" value={name} onChangeText={setName} />
       <TextInput style={s.input} placeholder="E-posta" placeholderTextColor="#888" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
       <TextInput style={s.input} placeholder="Şifre" placeholderTextColor="#888" value={password} onChangeText={setPassword} secureTextEntry />
       <TouchableOpacity style={s.btn} onPress={handleRegister} disabled={loading}>

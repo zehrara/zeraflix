@@ -13,9 +13,9 @@ export default function LoginScreen({ navigation }) {
     setLoading(true);
     try {
       const res = await authService.login(email, password);
-      const { token, userId } = res.data;
+      const { token, user } = res.data;
       await AsyncStorage.setItem('token', token);
-      await AsyncStorage.setItem('userId', String(userId));
+      await AsyncStorage.setItem('userId', String(user.id));
       navigation.replace('Main');
     } catch (e) {
       Alert.alert('Giriş Başarısız', e.response?.data?.message || 'Bir hata oluştu.');

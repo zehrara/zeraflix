@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
 import { getAuthUser } from '@/lib/auth'
+import { getCollection } from '@/lib/redis'
+import { content, type HistoryEntry, type WatchlistEntry, type RatingEntry } from '@/lib/store'
 
 export async function GET(request: NextRequest) {
   const user = getAuthUser(request)
@@ -8,47 +9,31 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Gather genres from user's watch history
-  const watchedIds = new Set(
-    store.history.filter((h) => h.userId === user.id).map((h) => h.contentId)
-  )
+  const [history, watchlist, ratings] = await Promise.all([
+    getCollection<HistoryEntry>('history'),
+    getCollection<WatchlistEntry>('watchlist'),
+    getCollection<RatingEntry>('ratings'),
+  ])
 
-  const watchlistIds = new Set(
-    store.watchlist.filter((w) => w.userId === user.id).map((w) => w.contentId)
-  )
+  const watchedIds = new Set(history.filter((h) => h.userId === user.id).map((h) => h.contentId))
+  const watchlistIds = new Set(watchlist.filter((w) => w.userId === user.id).map((w) => w.contentId))
 
-  // Count genre preferences from history + ratings
   const genreScore: Record<string, number> = {}
-
   for (const contentId of watchedIds) {
-    const content = store.content.find((c) => c.id === contentId)
-    if (!content) continue
-    const userRating = store.ratings.find(
-      (r) => r.userId === user.id && r.contentId === contentId
-    )
+    const item = content.find((c) => c.id === contentId)
+    if (!item) continue
+    const userRating = ratings.find((r) => r.userId === user.id && r.contentId === contentId)
     const weight = userRating ? userRating.rating / 5 : 1
-    genreScore[content.genre] = (genreScore[content.genre] ?? 0) + weight
+    genreScore[item.genre] = (genreScore[item.genre] ?? 0) + weight
   }
 
-  // Score every content item not already watched or in watchlist
-  const candidates = store.content
+  const candidates = content
     .filter((c) => !watchedIds.has(c.id) && !watchlistIds.has(c.id))
-    .map((c) => ({
-      ...c,
-      score: (genreScore[c.genre] ?? 0) * 2 + c.rating,
-    }))
+    .map((c) => ({ ...c, score: (genreScore[c.genre] ?? 0) * 2 + c.rating }))
     .sort((a, b) => b.score - a.score)
 
-  // Fall back to top-rated content if user has no history
-  const recommendations =
-    candidates.length > 0
-      ? candidates
-      : [...store.content].sort((a, b) => b.rating - a.rating)
-
-  const result = recommendations.slice(0, 10).map((c) => {
-    const { score: _, ...rest } = c as typeof c & { score: number }
-    return rest
-  })
+  const pool = candidates.length > 0 ? candidates : [...content].sort((a, b) => b.rating - a.rating)
+  const result = pool.slice(0, 10).map(({ score: _, ...rest }: any) => rest)
 
   return Response.json({ recommendations: result, total: result.length })
 }

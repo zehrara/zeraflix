@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
 import { getAuthUser } from '@/lib/auth'
+import { getCollection, setCollection } from '@/lib/redis'
+import { content, type WatchlistEntry, type HistoryEntry } from '@/lib/store'
 
 export async function GET(request: NextRequest) {
   const user = getAuthUser(request)
@@ -8,13 +9,11 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const userWatchlist = store.watchlist
+  const watchlist = await getCollection<WatchlistEntry>('watchlist')
+  const userWatchlist = watchlist
     .filter((w) => w.userId === user.id)
     .sort((a, b) => new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime())
-    .map((w) => ({
-      ...w,
-      content: store.content.find((c) => c.id === w.contentId),
-    }))
+    .map((w) => ({ ...w, content: content.find((c) => c.id === w.contentId) }))
 
   return Response.json({ watchlist: userWatchlist, total: userWatchlist.length })
 }
@@ -29,26 +28,32 @@ export async function POST(request: NextRequest) {
   if (!contentId) {
     return Response.json({ error: 'contentId is required' }, { status: 400 })
   }
-
-  if (!store.content.find((c) => c.id === contentId)) {
+  if (!content.find((c) => c.id === contentId)) {
     return Response.json({ error: 'Content not found' }, { status: 404 })
   }
 
-  if (store.watchlist.find((w) => w.userId === user.id && w.contentId === contentId)) {
+  const [watchlist, history] = await Promise.all([
+    getCollection<WatchlistEntry>('watchlist'),
+    getCollection<HistoryEntry>('history'),
+  ])
+
+  if (watchlist.find((w) => w.userId === user.id && w.contentId === contentId)) {
     return Response.json({ error: 'Already in watchlist' }, { status: 409 })
   }
 
-  const entry = { userId: user.id, contentId, addedAt: new Date().toISOString() }
-  store.watchlist.push(entry)
+  const entry: WatchlistEntry = { userId: user.id, contentId, addedAt: new Date().toISOString() }
+  const saves: Promise<void>[] = [setCollection('watchlist', [...watchlist, entry])]
 
-  // Record to history as well
-  const alreadyInHistory = store.history.find(
-    (h) => h.userId === user.id && h.contentId === contentId
-  )
-  if (!alreadyInHistory) {
-    store.history.push({ userId: user.id, contentId, watchedAt: new Date().toISOString() })
+  if (!history.find((h) => h.userId === user.id && h.contentId === contentId)) {
+    saves.push(
+      setCollection('history', [
+        ...history,
+        { userId: user.id, contentId, watchedAt: new Date().toISOString() },
+      ])
+    )
   }
 
+  await Promise.all(saves)
   return Response.json({ entry }, { status: 201 })
 }
 
@@ -63,14 +68,13 @@ export async function DELETE(request: NextRequest) {
     return Response.json({ error: 'contentId is required' }, { status: 400 })
   }
 
-  const before = store.watchlist.length
-  store.watchlist = store.watchlist.filter(
-    (w) => !(w.userId === user.id && w.contentId === contentId)
-  )
+  const watchlist = await getCollection<WatchlistEntry>('watchlist')
+  const updated = watchlist.filter((w) => !(w.userId === user.id && w.contentId === contentId))
 
-  if (store.watchlist.length === before) {
+  if (updated.length === watchlist.length) {
     return Response.json({ error: 'Not found in watchlist' }, { status: 404 })
   }
 
+  await setCollection('watchlist', updated)
   return Response.json({ message: 'Removed from watchlist' })
 }

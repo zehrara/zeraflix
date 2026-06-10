@@ -11,7 +11,6 @@ import WatchlistScreen from './src/screens/WatchlistScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
 import RecommendationsScreen from './src/screens/RecommendationsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import DetailScreen from './src/screens/DetailScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,7 +42,6 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
-        <Stack.Screen name="Detail" component={DetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

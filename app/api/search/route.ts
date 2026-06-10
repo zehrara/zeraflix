@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
+import { content } from '@/lib/store'
 
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get('q') ?? ''
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   }
 
   const lower = q.toLowerCase()
-  const results = store.content.filter(
+  const results = content.filter(
     (c) =>
       c.title.toLowerCase().includes(lower) ||
       c.genre.toLowerCase().includes(lower) ||

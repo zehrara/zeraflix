@@ -9,13 +9,13 @@ export default function HistoryScreen() {
 
   useEffect(() => {
     (async () => {
-      try { const userId = await AsyncStorage.getItem('userId'); const r = await userService.getHistory(userId); setHistory(r.data); }
+      try { const r = await userService.getHistory(); setHistory(r.data.history); }
       catch { setHistory([]); }
       finally { setLoading(false); }
     })();
   }, []);
 
-  if (loading) return <View style={s.center}><ActivityIndicator size="large" color="#E50914" /></View>;
+  if (loading) return <View style={s.center}><ActivityIndicator color="#E50914" /></View>;
 
   return (
     <View style={s.container}>

@@ -10,7 +10,7 @@ export default function WatchlistScreen() {
 
   const fetchList = async () => {
     setLoading(true);
-    try { const userId = await AsyncStorage.getItem('userId'); const r = await userService.getWatchlist(userId); setList(r.data); }
+    try { const r = await userService.getWatchlist(); setList(r.data.watchlist); }
     catch { setList([]); }
     finally { setLoading(false); }
   };
@@ -18,24 +18,24 @@ export default function WatchlistScreen() {
   useFocusEffect(useCallback(() => { fetchList(); }, []));
 
   const handleRemove = async (contentId) => {
-    try { const userId = await AsyncStorage.getItem('userId'); await userService.removeFromWatchlist(userId, contentId); setList(prev => prev.filter(i => i.id !== contentId)); }
+    try { await userService.removeFromWatchlist(contentId); setList(prev => prev.filter(i => i.contentId !== contentId)); }
     catch { Alert.alert('Hata', 'Kaldırılamadı.'); }
   };
 
-  if (loading) return <View style={s.center}><ActivityIndicator size="large" color="#E50914" /></View>;
+  if (loading) return <View style={s.center}><ActivityIndicator color="#E50914" /></View>;
 
   return (
     <View style={s.container}>
       <Text style={s.header}>Listem</Text>
       {list.length === 0 ? <Text style={s.empty}>Listeniz boş.</Text> :
-        <FlatList data={list} keyExtractor={(item) => String(item.id)}
+        <FlatList data={list} keyExtractor={(item) => String(item.contentId)}
           renderItem={({ item }) => (
             <View style={s.card}>
               <View style={{ flex: 1 }}>
-                <Text style={s.title}>{item.title}</Text>
-                <Text style={s.genre}>{item.genre || ''}</Text>
+                <Text style={s.title}>{item.content?.title}</Text>
+                <Text style={s.genre}>{item.content?.genre || ''}</Text>
               </View>
-              <TouchableOpacity onPress={() => handleRemove(item.id)}><Text style={s.remove}>✕</Text></TouchableOpacity>
+              <TouchableOpacity onPress={() => handleRemove(item.contentId)}><Text style={s.remove}>✕</Text></TouchableOpacity>
             </View>
           )} />}
     </View>

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
 import { createToken } from '@/lib/auth'
+import { getUsers } from '@/lib/redis'
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'email and password are required' }, { status: 400 })
   }
 
-  const user = store.users.find((u) => u.email === email && u.password === password)
+  const users = await getUsers()
+  const user = users.find((u) => u.email === email && u.password === password)
   if (!user) {
     return Response.json({ error: 'Invalid credentials' }, { status: 401 })
   }

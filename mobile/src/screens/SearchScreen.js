@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { contentService } from '../services/api';
 
 export default function SearchScreen() {
+  const navigation = useNavigation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,7 @@ export default function SearchScreen() {
   const handleSearch = async () => {
     if (!query.trim()) return;
     setLoading(true); setSearched(true);
-    try { const r = await contentService.search(query); setResults(r.data); }
+    try { const r = await contentService.search(query); setResults(r.data.results); }
     catch { setResults([]); }
     finally { setLoading(false); }
   };
@@ -27,10 +29,10 @@ export default function SearchScreen() {
       {!loading && searched && results.length === 0 && <Text style={s.empty}>Sonuç bulunamadı.</Text>}
       <FlatList data={results} keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <View style={s.card}>
+          <TouchableOpacity style={s.card} onPress={() => navigation.navigate('Detail', { item })}>
             <Text style={s.title}>{item.title}</Text>
             <Text style={s.genre}>{item.genre || item.category || ''}</Text>
-          </View>
+          </TouchableOpacity>
         )} />
     </View>
   );

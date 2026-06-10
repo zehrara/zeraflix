@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { contentService } from '../services/api';
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const [contents, setContents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    contentService.getAll().then(r => setContents(r.data)).catch(() => {}).finally(() => setLoading(false));
+    contentService.getAll().then(r => setContents(r.data.content)).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <View style={s.center}><ActivityIndicator size="large" color="#E50914" /></View>;
+  if (loading) return <View style={s.center}><ActivityIndicator color="#E50914" /></View>;
 
   return (
     <View style={s.container}>
       <Text style={s.header}>🎬 Zeraflix</Text>
       <FlatList data={contents} keyExtractor={(item) => String(item.id)} numColumns={2} columnWrapperStyle={{ justifyContent: 'space-between' }}
         renderItem={({ item }) => (
-          <View style={s.card}>
+          <TouchableOpacity style={s.card} onPress={() => navigation.navigate('Detail', { item })}>
             {item.posterUrl ? <Image source={{ uri: item.posterUrl }} style={s.poster} /> : <View style={s.posterPlaceholder}><Text style={s.posterText}>🎬</Text></View>}
             <Text style={s.title} numberOfLines={2}>{item.title}</Text>
             <Text style={s.genre}>{item.genre || item.category || ''}</Text>
-          </View>
+          </TouchableOpacity>
         )} />
     </View>
   );

@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
 import { getAuthUser } from '@/lib/auth'
+import { getCollection } from '@/lib/redis'
+import { content, type HistoryEntry } from '@/lib/store'
 
 export async function GET(request: NextRequest) {
   const user = getAuthUser(request)
@@ -8,14 +9,11 @@ export async function GET(request: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const userHistory = store.history
+  const history = await getCollection<HistoryEntry>('history')
+  const userHistory = history
     .filter((h) => h.userId === user.id)
     .sort((a, b) => new Date(b.watchedAt).getTime() - new Date(a.watchedAt).getTime())
+    .map((h) => ({ ...h, content: content.find((c) => c.id === h.contentId) }))
 
-  const enriched = userHistory.map((h) => ({
-    ...h,
-    content: store.content.find((c) => c.id === h.contentId),
-  }))
-
-  return Response.json({ history: enriched, total: enriched.length })
+  return Response.json({ history: userHistory, total: userHistory.length })
 }

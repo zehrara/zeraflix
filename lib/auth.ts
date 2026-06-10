@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server'
-import store from './store'
 
 // Token is simply the user ID encoded in base64 for demo purposes.
 // In production, use a proper JWT library.
@@ -17,10 +16,10 @@ export function parseToken(token: string): string {
   }
 }
 
-export function getAuthUser(request: NextRequest) {
+export function getAuthUser(request: NextRequest): { id: string } | null {
   const authHeader = request.headers.get('authorization') ?? ''
   if (!authHeader.startsWith('Bearer ')) return null
-  const token = authHeader.slice(7)
-  const userId = parseToken(token)
-  return store.users.find((u) => u.id === userId) ?? null
+  const userId = parseToken(authHeader.slice(7))
+  if (!userId) return null
+  return { id: userId }
 }

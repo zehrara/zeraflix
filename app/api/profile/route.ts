@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import store from '@/lib/store'
 import { getAuthUser } from '@/lib/auth'
+import { getUsers, getCollection, setCollection } from '@/lib/redis'
 
 export async function PUT(request: NextRequest) {
   const user = getAuthUser(request)
@@ -11,11 +11,15 @@ export async function PUT(request: NextRequest) {
   const body = await request.json()
   const { name, password } = body ?? {}
 
-  const index = store.users.findIndex((u) => u.id === user.id)
-  if (name) store.users[index].name = name
-  if (password) store.users[index].password = password
+  const users = await getUsers()
+  const index = users.findIndex((u) => u.id === user.id)
+  if (index === -1) return Response.json({ error: 'User not found' }, { status: 404 })
 
-  const { password: _, ...safeUser } = store.users[index]
+  if (name) users[index].name = name
+  if (password) users[index].password = password
+  await setCollection('users', users)
+
+  const { password: _, ...safeUser } = users[index]
   return Response.json({ user: safeUser })
 }
 
@@ -25,10 +29,19 @@ export async function DELETE(request: NextRequest) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  store.users = store.users.filter((u) => u.id !== user.id)
-  store.watchlist = store.watchlist.filter((w) => w.userId !== user.id)
-  store.ratings = store.ratings.filter((r) => r.userId !== user.id)
-  store.history = store.history.filter((h) => h.userId !== user.id)
+  const [users, watchlist, ratings, history] = await Promise.all([
+    getUsers(),
+    getCollection('watchlist'),
+    getCollection('ratings'),
+    getCollection('history'),
+  ])
+
+  await Promise.all([
+    setCollection('users', users.filter((u: any) => u.id !== user.id)),
+    setCollection('watchlist', watchlist.filter((w: any) => w.userId !== user.id)),
+    setCollection('ratings', ratings.filter((r: any) => r.userId !== user.id)),
+    setCollection('history', history.filter((h: any) => h.userId !== user.id)),
+  ])
 
   return Response.json({ message: 'Account deleted' })
 }
