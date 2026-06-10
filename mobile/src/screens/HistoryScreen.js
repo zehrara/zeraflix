@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 import { userService } from '../services/api';
@@ -24,7 +23,7 @@ export default function HistoryScreen() {
         <FlatList data={history} keyExtractor={(_, i) => String(i)}
           renderItem={({ item }) => (
             <View style={s.card}>
-              <Text style={s.title}>{item.title || item.contentTitle || 'İçerik'}</Text>
+              <Text style={s.title}>{item.content?.title || item.title || 'İçerik'}</Text>
               <Text style={s.date}>{item.watchedAt ? new Date(item.watchedAt).toLocaleDateString('tr-TR') : ''}</Text>
             </View>
           )} />}
