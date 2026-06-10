@@ -1,52 +1,81 @@
-import React, { useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import {
+  ActivityIndicator, FlatList, Image, StyleSheet,
+  Text, TextInput, TouchableOpacity, View
+} from 'react-native';
 import { contentService } from '../services/api';
 
 export default function SearchScreen() {
-  const navigation = useNavigation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searched, setSearched] = useState(false);
+  const [all, setAll] = useState([]);
+  const navigation = useNavigation();
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
-    setLoading(true); setSearched(true);
-    try { const r = await contentService.search(query); setResults(r.data.results); }
-    catch { setResults([]); }
-    finally { setLoading(false); }
-  };
+  useEffect(() => {
+    contentService.getAll().then(r => setAll(r.data.content || [])).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!query.trim()) { setResults([]); return; }
+    setLoading(true);
+    const timer = setTimeout(() => {
+      contentService.search(query)
+        .then(r => setResults(r.data.results || []))
+        .catch(() => {
+          const q = query.toLowerCase();
+          setResults(all.filter(c =>
+            c.title.toLowerCase().includes(q) ||
+            c.genre.toLowerCase().includes(q)
+          ));
+        })
+        .finally(() => setLoading(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [query]);
 
   return (
     <View style={s.container}>
       <Text style={s.header}>Ara</Text>
-      <View style={s.searchRow}>
-        <TextInput style={s.input} placeholder="Film veya dizi ara..." placeholderTextColor="#888" value={query} onChangeText={setQuery} onSubmitEditing={handleSearch} returnKeyType="search" />
-        <TouchableOpacity style={s.btn} onPress={handleSearch}><Text style={s.btnText}>🔍</Text></TouchableOpacity>
-      </View>
-      {loading && <ActivityIndicator color="#E50914" style={{ marginTop: 24 }} />}
-      {!loading && searched && results.length === 0 && <Text style={s.empty}>Sonuç bulunamadı.</Text>}
-      <FlatList data={results} keyExtractor={(item) => String(item.id)}
+      <TextInput
+        style={s.input}
+        placeholder="Film, dizi, müzik ara..."
+        placeholderTextColor="#555"
+        value={query}
+        onChangeText={setQuery}
+        autoCapitalize="none"
+      />
+      {loading && <ActivityIndicator color="#E50914" style={{ marginTop: 16 }} />}
+      {!loading && query.trim() && results.length === 0 &&
+        <Text style={s.empty}>Sonuç bulunamadı.</Text>}
+      <FlatList
+        data={results}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={s.card} onPress={() => navigation.navigate('Detail', { item })}>
-            <Text style={s.title}>{item.title}</Text>
-            <Text style={s.genre}>{item.genre || item.category || ''}</Text>
+          <TouchableOpacity style={s.row} onPress={() => navigation.navigate('Detail', { item })}>
+            {item.posterUrl
+              ? <Image source={{ uri: item.posterUrl }} style={s.thumb} />
+              : <View style={[s.thumb, s.thumbPlaceholder]}><Text>🎬</Text></View>}
+            <View style={{ flex: 1 }}>
+              <Text style={s.title}>{item.title}</Text>
+              <Text style={s.meta}>{item.type === 'series' ? 'Dizi' : 'Film'} • {item.genre} • {item.year}</Text>
+            </View>
           </TouchableOpacity>
-        )} />
+        )}
+      />
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414', paddingTop: 50, padding: 16 },
-  header: { fontSize: 24, color: '#fff', fontWeight: 'bold', marginBottom: 16 },
-  searchRow: { flexDirection: 'row', marginBottom: 16 },
-  input: { flex: 1, backgroundColor: '#333', color: '#fff', borderRadius: 8, padding: 12, fontSize: 16 },
-  btn: { backgroundColor: '#E50914', borderRadius: 8, padding: 12, marginLeft: 8, justifyContent: 'center' },
-  btnText: { fontSize: 18 },
-  card: { backgroundColor: '#1f1f1f', borderRadius: 8, padding: 14, marginBottom: 10 },
-  title: { color: '#fff', fontWeight: 'bold', fontSize: 15 },
-  genre: { color: '#aaa', fontSize: 12, marginTop: 4 },
-  empty: { color: '#aaa', textAlign: 'center', marginTop: 32, fontSize: 16 },
+  container: { flex: 1, backgroundColor: '#141414', paddingTop: 52, paddingHorizontal: 16 },
+  header: { fontSize: 24, color: '#fff', fontWeight: 'bold', marginBottom: 14 },
+  input: { backgroundColor: '#222', color: '#fff', borderRadius: 10, padding: 12, fontSize: 15, marginBottom: 8 },
+  row: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 12 },
+  thumb: { width: 60, height: 85, borderRadius: 5 },
+  thumbPlaceholder: { backgroundColor: '#2a2a2a', justifyContent: 'center', alignItems: 'center' },
+  title: { color: '#fff', fontWeight: '600', fontSize: 14 },
+  meta: { color: '#888', fontSize: 12, marginTop: 3, textTransform: 'capitalize' },
+  empty: { color: '#666', textAlign: 'center', marginTop: 40 },
 });
