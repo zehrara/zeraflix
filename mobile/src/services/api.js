@@ -17,7 +17,7 @@ export const authService = {
 };
 
 export const contentService = {
-  getAll: () => api.get('/api/content'),
+  getAll: () => api.get('/api/content', { params: { _t: Date.now() } }),
   search: (query) => api.get('/api/search', { params: { q: query } }),
 };
 
