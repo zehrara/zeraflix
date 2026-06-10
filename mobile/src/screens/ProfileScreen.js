@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { userService } from '../services/api';
 
 export default function ProfileScreen({ navigation }) {
@@ -54,30 +54,36 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    <View style={s.container}>
-      <Text style={s.header}>Profil</Text>
-      <View style={s.avatar}><Text style={s.avatarText}>👤</Text></View>
-      <Text style={s.info}>Kullanıcı ID: {userId}</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={s.container} keyboardShouldPersistTaps="handled">
+          <Text style={s.header}>Profil</Text>
+          <TouchableOpacity style={s.avatar} activeOpacity={1}>
+            <Text style={s.avatarText}>👤</Text>
+          </TouchableOpacity>
+          <Text style={s.info}>Kullanıcı ID: {userId}</Text>
 
-      <Text style={s.sectionTitle}>Profil Güncelle</Text>
-      <TextInput style={s.input} placeholder="Yeni Ad" placeholderTextColor="#888" value={name} onChangeText={setName} />
-      <TextInput style={s.input} placeholder="Yeni E-posta" placeholderTextColor="#888" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-      <TouchableOpacity style={s.btn} onPress={handleUpdateProfile} disabled={updating}>
-        {updating ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>Güncelle</Text>}
-      </TouchableOpacity>
+          <Text style={s.sectionTitle}>Profil Güncelle</Text>
+          <TextInput style={s.input} placeholder="Yeni Ad" placeholderTextColor="#888" value={name} onChangeText={setName} />
+          <TextInput style={s.input} placeholder="Yeni E-posta" placeholderTextColor="#888" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+          <TouchableOpacity style={s.btn} onPress={handleUpdateProfile} disabled={updating}>
+            {updating ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>Güncelle</Text>}
+          </TouchableOpacity>
 
-      <TouchableOpacity style={s.logoutBtn} onPress={handleLogout}>
-        <Text style={s.btnText}>Çıkış Yap</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={s.deleteBtn} onPress={handleDeleteProfile}>
-        <Text style={s.btnText}>Hesabı Sil</Text>
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity style={s.logoutBtn} onPress={handleLogout}>
+            <Text style={s.btnText}>Çıkış Yap</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={s.deleteBtn} onPress={handleDeleteProfile}>
+            <Text style={s.btnText}>Hesabı Sil</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const s = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#141414', paddingTop: 50, padding: 24, alignItems: 'center' },
+  container: { flexGrow: 1, backgroundColor: '#141414', paddingTop: 50, padding: 24, alignItems: 'center' },
   header: { fontSize: 24, color: '#fff', fontWeight: 'bold', marginBottom: 16 },
   avatar: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
   avatarText: { fontSize: 48 },

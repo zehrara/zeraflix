@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Linking, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Linking, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { userService } from '../services/api';
 
 export default function DetailScreen({ route, navigation }) {
@@ -40,6 +40,11 @@ export default function DetailScreen({ route, navigation }) {
   const handleWatch = async () => {
     if (!item.videoUrl) return Alert.alert('Bilgi', 'Bu içerik için video bağlantısı yok.');
     try {
+      await userService.addToHistory(item.id);
+    } catch {
+      // geçmişe eklenemese de izlemeye devam et
+    }
+    try {
       await Linking.openURL(item.videoUrl);
     } catch {
       Alert.alert('Hata', 'Video açılamadı.');
@@ -51,7 +56,10 @@ export default function DetailScreen({ route, navigation }) {
       <TouchableOpacity style={s.back} onPress={() => navigation.goBack()}>
         <Text style={s.backText}>‹ Geri</Text>
       </TouchableOpacity>
-      <View style={s.poster}><Text style={s.posterEmoji}>🎬</Text></View>
+      {item.posterUrl
+        ? <Image source={{ uri: item.posterUrl }} style={s.poster} resizeMode="cover" />
+        : <View style={s.posterPlaceholder}><Text style={s.posterEmoji}>🎬</Text></View>
+      }
       <View style={s.body}>
         <Text style={s.title}>{item.title}</Text>
         <View style={s.metaRow}>
@@ -95,7 +103,8 @@ const s = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#141414' },
   back: { paddingTop: 50, paddingHorizontal: 16, paddingBottom: 8 },
   backText: { color: '#fff', fontSize: 18 },
-  poster: { height: 220, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' },
+  poster: { width: '100%', height: 220 },
+  posterPlaceholder: { width: '100%', height: 220, backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' },
   posterEmoji: { fontSize: 64 },
   body: { padding: 20 },
   title: { color: '#fff', fontSize: 26, fontWeight: 'bold', marginBottom: 8 },

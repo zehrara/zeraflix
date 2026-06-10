@@ -30,6 +30,7 @@ export const userService = {
   updateProfile: (data) => api.put('/api/profile', data),
   deleteProfile: () => api.delete('/api/profile'),
   rateContent: (contentId, rating) => api.put('/api/rate', { contentId, rating }),
+  addToHistory: (contentId) => api.post('/api/history', { contentId }),
 };
 
 export default api;
